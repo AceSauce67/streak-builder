@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="fr" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>STREAK BUILDER - Interactive Demo</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- React & ReactDOM -->
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  
+  <!-- Babel Standalone -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <style>
+    body {
+      background-color: #0F0F11;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+    .glass-bar {
+      background: rgba(24, 24, 27, 0.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .glass-card {
+      background: rgba(24, 24, 27, 0.85);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+    }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
+</head>
+<body class="text-zinc-100 min-h-screen flex justify-center selection:bg-emerald-500 selection:text-black">
+
+  <div id="root" class="w-full max-w-md min-h-screen flex flex-col relative pb-32"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect, useMemo } = React;
+
+    // --- DICTIONNAIRE I18N ---
+    const i18n = {
+      fr: {
+        title: "STREAK BUILDER",
+        today: "Aujourd'hui",
+        weekTab: "Semaine",
+        statsTab: "Stats",
+        trophiesTab: "Trophées",
+        siriTab: "Tuto Siri",
+        settingsTitle: "Réglages Globaux",
+        langLabel: "Langue de l'application",
+        perfectColorLabel: "Couleur des Jours Parfaits (Calendrier)",
+        syncKeyLabel: "Clé Sync Vercel / Widget",
+        waterTitle: "HYDRATATION",
+        stepsTitle: "PAS",
+        todayProgress: "Progression du jour",
+        plannedHabits: "HABITUDES PLANIFIÉES CE JOUR",
+        allHabitsFilter: "🌟 Tous les objectifs (Vue Globale)",
+        yearlyStatus: "Suivi Annuel (365 Jours)",
+        perfectDaysMonth: "Jours Parfaits ce mois",
+        totalCompleted: "Total Réalisé",
+        quote: "« La régularité bat le talent quand le talent ne produit rien. »",
+        siriTitle: "Configuration Siri & Raccourcis",
+        siriStep1: "1. Ouvre l'application Raccourcis sur ton iPhone.",
+        siriStep2: "2. Crée un nouveau Raccourci nommé « Valide la Séance ».",
+        siriStep3: "3. Ajoute l'action « Obtenir le contenu de l'URL » avec ce lien unique :",
+        close: "Fermer"
+      },
+      en: {
+        title: "STREAK BUILDER",
+        today: "Today",
+        weekTab: "Week",
+        statsTab: "Stats",
+        trophiesTab: "Trophies",
+        siriTab: "Siri Guide",
+        settingsTitle: "Global Settings",
+        langLabel: "Application Language",
+        perfectColorLabel: "Perfect Days Ring Color (Calendar)",
+        syncKeyLabel: "Vercel / Widget Sync Key",
+        waterTitle: "HYDRATION",
+        stepsTitle: "STEPS",
+        todayProgress: "Today's Progress",
+        plannedHabits: "PLANNED HABITS TODAY",
+        allHabitsFilter: "🌟 All Objectives (Global View)",
+        yearlyStatus: "Yearly Status (365 Days)",
+        perfectDaysMonth: "Perfect Days this month",
+        totalCompleted: "Total Completed",
+        quote: "« Consistency beats talent when talent fails to deliver. »",
+        siriTitle: "Siri & Shortcuts Setup",
+        siriStep1: "1. Open the Shortcuts app on your iPhone.",
+        siriStep2: "2. Create a new Shortcut named 'Log Workout'.",
+        siriStep3: "3. Add 'Get Contents of URL' action using your unique link:",
+        close: "Close"
+      },
+      es: {
+        title: "STREAK BUILDER",
+        today: "Hoy",
+        weekTab: "Semana",
+        statsTab: "Estadísticas",
+        trophiesTab: "Trofeos",
+        siriTab: "Guía Siri",
+        settingsTitle: "Ajustes Globales",
+        langLabel: "Idioma de la aplicación",
+        perfectColorLabel: "Color Anillo Días Perfectos (Calendario)",
+        syncKeyLabel: "Clave Sync Vercel / Widget",
+        waterTitle: "HIDRATACIÓN",
+        stepsTitle: "PASOS",
+        todayProgress: "Progresión de hoy",
+        plannedHabits: "HÁBITOS PLANIFICADOS HOY",
+        allHabitsFilter: "🌟 Todos los objetivos (Vista Global)",
+        yearlyStatus: "Estado Anual (365 Días)",
+        perfectDaysMonth: "Días Perfectos este mes",
+        totalCompleted: "Total Realizado",
+        quote: "« La constancia vence al talento cuando el talento no se esfuerza. »",
+        siriTitle: "Configuración Siri y Atajos",
+        siriStep1: "1. Abre la aplicación Atajos en tu iPhone.",
+        siriStep2: "2. Crea un nuevo Atajo llamado 'Validar Entreno'.",
+        siriStep3: "3. Añade la acción 'Obtener contenido de URL' con tu enlace:",
+        close: "Cerrar"
+      }
+    };
+
+    const PERFECT_COLORS = [
+      { name: 'Or', value: '#F59E0B' },
+      { name: 'Rose', value: '#EC4899' },
+      { name: 'Vert Néon', value: '#22C55E' },
+      { name: 'Cyan', value: '#06B6D4' },
+      { name: 'Violet', value: '#A855F7' }
+    ];
+
+    function App() {
+      const [lang, setLang] = useState('fr');
+      const [activeTab, setActiveTab] = useState('week');
+      const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+      const [perfectDayColor, setPerfectDayColor] = useState('#F59E0B');
+      
+      // Hydratation & Pas
+      const [waterCl, setWaterCl] = useState(175);
+      const [steps, setSteps] = useState(8420);
+
+      // Habitudes
+      const [habits, setHabits] = useState([
+        { id: '1', name: 'Musculation & Force', icon: '🏋️', color: '#3B82F6', streak: 12, completedToday: true },
+        { id: '2', name: 'Sprinting & Run', icon: '🏃', color: '#10B981', streak: 5, completedToday: true },
+        { id: '3', name: 'Lecture (20 min)', icon: '📚', color: '#F59E0B', streak: 30, completedToday: true },
+        { id: '4', name: 'Méditation', icon: '🧘', color: '#8B5CF6', streak: 0, completedToday: false },
+      ]);
+
+      // Fonction de formatage dynamique de la date
+      const getLocalizedDate = (currentLang) => {
+        const localeMap = { fr: 'fr-FR', en: 'en-US', es: 'es-ES' };
+        const today = new Date();
+        return today.toLocaleDateString(localeMap[currentLang] || 'fr-FR', {
+          weekday: 'long',
+          day: 'numeric',
+          month: 'long'
+        }).toUpperCase();
+      };
+
+      const t = i18n[lang];
+
+      const toggleHabit = (id) => {
+        setHabits(habits.map(h => h.id === id ? { ...h, completedToday: !h.completedToday } : h));
+      };
+
+      const addWater = (amount) => setWaterCl(prev => Math.min(prev + amount, 300));
+
+      const completedCount = habits.filter(h => h.completedToday).length;
+      const progressPercent = Math.round((completedCount / habits.length) * 100);
+
+      return (
+        <div className="flex flex-col min-h-screen p-4">
+          
+          {/* HEADER (Forge Fuel Style) */}
+          <header className="flex justify-between items-start pt-2 pb-6 border-b border-zinc-800/60 mb-5">
+            <div>
+              <h1 className="text-2xl font-black tracking-widest text-zinc-100 font-mono uppercase">
+                {t.title}
+              </h1>
+              <p className="text-xs font-bold tracking-wider text-emerald-500 uppercase mt-1">
+                {getLocalizedDate(lang)}
+              </p>
+            </div>
+            
+            <button 
+              onClick={() => setIsSettingsOpen(true)}
+              className="p-2.5 bg-zinc-900 border border-zinc-800 hover:border-zinc-700 rounded-xl transition text-zinc-300"
+            >
+              ⚙️
+            </button>
+          </header>
+
+          {/* VUE SEMAINE */}
+          {activeTab === 'week' && (
+            <div className="space-y-5">
+              
+              {/* BLOCK SANTÉ */}
+              <div className="glass-card p-4 rounded-2xl space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  {/* Eau */}
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-xs font-bold text-zinc-400">
+                      <span>💧 {t.waterTitle}</span>
+                      <span className="text-emerald-400 font-mono">{(waterCl / 100).toFixed(2)}L / 2.5L</span>
+                    </div>
+                    <div className="w-full h-2 bg-zinc-800 rounded-full overflow-hidden">
+                      <div className="h-full bg-cyan-500 rounded-full transition-all duration-300" style={{ width: `${(waterCl / 250) * 100}%` }}></div>
+                    </div>
+                    <div className="flex gap-1 pt-1">
+                      <button onClick={() => addWater(25)} className="text-[10px] font-bold bg-zinc-800 hover:bg-zinc-700 px-2 py-1 rounded text-cyan-300">+25cl</button>
+                      <button onClick={() => addWater(50)} className="text-[10px] font-bold bg-zinc-800 hover:bg-zinc-700 px-2 py-1 rounded text-cyan-300">+50cl</button>
+                      <button onClick={() => addWater(100)} className="text-[10px] font-bold bg-zinc-800 hover:bg-zinc-700 px-2 py-1 rounded text-cyan-300">+1L</button>
+                    </div>
+                  </div>
+
+                  {/* Pas */}
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-xs font-bold text-zinc-400">
+                      <span>👟 {t.stepsTitle}</span>
+                      <span className="text-emerald-400 font-mono">{steps.toLocaleString()} / 10k</span>
+                    </div>
+                    <div className="w-full h-2 bg-zinc-800 rounded-full overflow-hidden">
+                      <div className="h-full bg-emerald-500 rounded-full transition-all duration-300" style={{ width: `${(steps / 10000) * 100}%` }}></div>
+                    </div>
+                    <p className="text-[10px] text-zinc-500 pt-1">Synchro Apple Santé 🟢</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* PROGRESSION GLOBALE */}
+              <div className="glass-card p-4 rounded-2xl space-y-2">
+                <div className="flex justify-between items-center text-xs font-bold">
+                  <span className="text-zinc-400 uppercase tracking-wider">{t.todayProgress}</span>
+                  <span className="text-emerald-400 font-mono text-sm">{completedCount} / {habits.length} ({progressPercent}%)</span>
+                </div>
+                <div className="w-full h-2.5 bg-zinc-800 rounded-full overflow-hidden">
+                  <div className="h-full bg-gradient-to-r from-emerald-500 to-teal-400 transition-all duration-500" style={{ width: `${progressPercent}%` }}></div>
+                </div>
+              </div>
+
+              {/* LISTE DES HABITUDES */}
+              <div className="space-y-3">
+                <h3 className="text-xs font-bold tracking-widest text-zinc-500 uppercase">{t.plannedHabits}</h3>
+                
+                {habits.map((habit) => (
+                  <div 
+                    key={habit.id}
+                    onClick={() => toggleHabit(habit.id)}
+                    className="glass-card p-4 rounded-2xl flex items-center justify-between cursor-pointer transition active:scale-[0.98]"
+                    style={{ borderLeft: `4px solid ${habit.color}` }}
+                  >
+                    <div className="flex items-center space-x-3">
+                      <div className={`w-6 h-6 rounded-lg flex items-center justify-center border transition ${habit.completedToday ? 'bg-emerald-500 border-emerald-400 text-black font-bold' : 'border-zinc-700 bg-zinc-900'}`}>
+                        {habit.completedToday && '✓'}
+                      </div>
+                      <div>
+                        <p className={`font-bold text-sm ${habit.completedToday ? 'line-through text-zinc-400' : 'text-zinc-100'}`}>
+                          {habit.icon} {habit.name}
+                        </p>
+                        <p className="text-[11px] text-zinc-500">🔥 {habit.streak} jours consécutifs</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+            </div>
+          )}
+
+          {/* VUE STATS */}
+          {activeTab === 'stats' && (
+            <div className="space-y-5">
+              
+              {/* FILTRE */}
+              <div className="glass-card p-3 rounded-2xl flex justify-between items-center">
+                <span className="text-xs font-bold text-zinc-400">HABITUDE :</span>
+                <select className="bg-zinc-900 text-xs font-bold text-white py-1.5 px-3 rounded-xl border border-zinc-700 focus:outline-none">
+                  <option>{t.allHabitsFilter}</option>
+                  {habits.map(h => <option key={h.id}>{h.icon} {h.name}</option>)}
+                </select>
+              </div>
+
+              {/* CALENDRIER MENSUEL */}
+              <div className="glass-card p-5 rounded-3xl space-y-4">
+                <div className="flex justify-between items-center">
+                  <h3 className="font-bold text-sm tracking-wider uppercase">JUILLET 2026</h3>
+                  <span className="text-xs font-mono text-amber-400 bg-amber-500/10 px-2.5 py-1 rounded-full border border-amber-500/20">
+                    24 Jours Parfaits 👑
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-7 gap-1 text-center text-xs font-bold text-zinc-500 uppercase">
+                  <span>L</span><span>M</span><span>M</span><span>J</span><span>V</span><span>S</span><span>D</span>
+                </div>
+
+                <div className="grid grid-cols-7 gap-2">
+                  <div></div><div></div>
+                  {Array.from({ length: 31 }).map((_, i) => {
+                    const day = i + 1;
+                    const isPerfect = [2, 3, 5, 6, 7, 10, 11, 12, 14, 15, 18, 19, 20, 21, 22, 24, 25, 26, 27, 28, 29].includes(day);
+                    return (
+                      <div key={day} className="flex items-center justify-center h-9 relative">
+                        <span 
+                          className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold relative"
+                          style={{
+                            border: isPerfect ? `2px solid ${perfectDayColor}` : '1px solid transparent',
+                            color: isPerfect ? '#FFF' : '#71717A',
+                            boxShadow: isPerfect ? `0 0 10px ${perfectDayColor}40` : 'none'
+                          }}
+                        >
+                          {day}
+                          {isPerfect && <span className="absolute -top-1.5 -right-1 text-[9px]">👑</span>}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* HEATMAP ANNUELLE */}
+              <div className="glass-card p-4 rounded-3xl space-y-3">
+                <h3 className="text-xs font-bold tracking-wider text-zinc-400 uppercase">{t.yearlyStatus}</h3>
+                <div className="overflow-x-auto no-scrollbar">
+                  <div className="grid grid-rows-7 grid-flow-col gap-1 w-max">
+                    {Array.from({ length: 364 }).map((_, idx) => {
+                      const active = idx % 3 !== 0;
+                      return (
+                        <div 
+                          key={idx} 
+                          className="w-2.5 h-2.5 rounded-sm transition-all"
+                          style={{
+                            backgroundColor: active ? perfectDayColor : '#27272A',
+                            opacity: active ? (idx % 2 === 0 ? 1 : 0.6) : 0.3
+                          }}
+                        />
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          )}
+
+          {/* VUE TROPHÉES */}
+          {activeTab === 'trophies' && (
+            <div className="grid grid-cols-2 gap-3">
+              {[
+                { title: 'Série Bronze', desc: '3 jours d\'affilée', icon: '🥉', unlocked: true },
+                { title: 'Série Argent', desc: '7 jours d\'affilée', icon: '🥈', unlocked: true },
+                { title: 'Série Or', desc: '30 jours d\'affilée', icon: '🥇', unlocked: true },
+                { title: 'Série Diamant', desc: '100 jours d\'affilée', icon: '💎', unlocked: false },
+                { title: 'Semaine Parfaite', desc: '100% sur 7 jours', icon: '🏆', unlocked: true },
+                { title: 'Mister Hydratation', desc: 'Objectif Eau 7 jours', icon: '🌊', unlocked: true },
+              ].map((t, idx) => (
+                <div key={idx} className={`glass-card p-4 rounded-2xl flex flex-col items-center text-center space-y-2 ${!t.unlocked && 'opacity-40 grayscale'}`}>
+                  <span className="text-4xl">{t.icon}</span>
+                  <p className="font-bold text-xs text-zinc-100">{t.title}</p>
+                  <p className="text-[10px] text-zinc-400">{t.desc}</p>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* VUE TUTO SIRI */}
+          {activeTab === 'siri' && (
+            <div className="glass-card p-5 rounded-3xl space-y-4">
+              <h3 className="font-bold text-sm tracking-wider uppercase text-emerald-400 flex items-center gap-2">
+                🎙️ {t.siriTitle}
+              </h3>
+              <p className="text-xs text-zinc-300">{t.siriStep1}</p>
+              <p className="text-xs text-zinc-300">{t.siriStep2}</p>
+              <p className="text-xs text-zinc-300">{t.siriStep3}</p>
+              <div className="p-3 bg-zinc-950 rounded-xl font-mono text-[10px] text-emerald-400 break-all border border-zinc-800">
+                https://streak-builder.vercel.app/api/check?key=DEMO_KEY_123&habit=sprint
+              </div>
+            </div>
+          )}
+
+          {/* BARRE DU BAS GLASSY + CITATION */}
+          <div className="fixed bottom-0 left-0 right-0 max-w-md mx-auto p-3 pointer-events-none">
+            <div className="glass-card mb-2 py-1.5 px-3 rounded-full text-center pointer-events-auto">
+              <p className="text-[10px] font-medium italic text-zinc-300">{t.quote}</p>
+            </div>
+
+            <nav className="glass-bar rounded-2xl p-2 flex justify-around items-center pointer-events-auto">
+              <button onClick={() => setActiveTab('week')} className={`flex flex-col items-center text-[10px] font-bold transition ${activeTab === 'week' ? 'text-emerald-400' : 'text-zinc-500'}`}>
+                <span className="text-base">📅</span>
+                {t.weekTab}
+              </button>
+              <button onClick={() => setActiveTab('stats')} className={`flex flex-col items-center text-[10px] font-bold transition ${activeTab === 'stats' ? 'text-emerald-400' : 'text-zinc-500'}`}>
+                <span className="text-base">📊</span>
+                {t.statsTab}
+              </button>
+              <button onClick={() => setActiveTab('trophies')} className={`flex flex-col items-center text-[10px] font-bold transition ${activeTab === 'trophies' ? 'text-emerald-400' : 'text-zinc-500'}`}>
+                <span className="text-base">🏆</span>
+                {t.trophiesTab}
+              </button>
+              <button onClick={() => setActiveTab('siri')} className={`flex flex-col items-center text-[10px] font-bold transition ${activeTab === 'siri' ? 'text-emerald-400' : 'text-zinc-500'}`}>
+                <span className="text-base">🎙️</span>
+                {t.siriTab}
+              </button>
+            </nav>
+          </div>
+
+          {/* MODALE RÉGLAGES ⚙️ */}
+          {isSettingsOpen && (
+            <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+              <div className="glass-card w-full max-w-sm p-6 rounded-3xl space-y-5">
+                <h3 className="font-bold text-base text-zinc-100">{t.settingsTitle}</h3>
+
+                {/* Langue */}
+                <div className="space-y-2">
+                  <label className="text-xs font-bold text-zinc-400 uppercase">{t.langLabel}</label>
+                  <div className="flex gap-2">
+                    {['fr', 'en', 'es'].map(l => (
+                      <button 
+                        key={l} 
+                        onClick={() => setLang(l)} 
+                        className={`flex-1 py-2 text-xs font-bold uppercase rounded-xl border transition ${lang === l ? 'bg-emerald-500/20 border-emerald-400 text-emerald-400' : 'bg-zinc-900 border-zinc-800 text-zinc-400'}`}
+                      >
+                        {l}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Couleur Cercle Jours Parfaits */}
+                <div className="space-y-2">
+                  <label className="text-xs font-bold text-zinc-400 uppercase">{t.perfectColorLabel}</label>
+                  <div className="flex gap-3">
+                    {PERFECT_COLORS.map(c => (
+                      <button 
+                        key={c.value} 
+                        onClick={() => setPerfectDayColor(c.value)}
+                        className={`w-8 h-8 rounded-full border-2 transition ${perfectDayColor === c.value ? 'scale-110 border-white' : 'border-transparent'}`}
+                        style={{ backgroundColor: c.value }}
+                      />
+                    ))}
+                  </div>
+                </div>
+
+                <button 
+                  onClick={() => setIsSettingsOpen(false)}
+                  className="w-full py-3 bg-emerald-500 hover:bg-emerald-400 font-bold text-black text-xs uppercase tracking-wider rounded-xl transition"
+                >
+                  {t.close}
+                </button>
+              </div>
+            </div>
+          )}
+
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>

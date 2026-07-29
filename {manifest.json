@@ -1,0 +1,15 @@
+{
+  "name": "Streak Builder",
+  "short_name": "StreakBuilder",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0F0F11",
+  "theme_color": "#0F0F11",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/9422/9422846.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
