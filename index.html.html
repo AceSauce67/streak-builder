@@ -38,13 +38,17 @@ backface-visibility:hidden;-webkit-backface-visibility:hidden}
 .pane.next{transform:translateX(100%)}
 @media(prefers-reduced-motion:reduce){#track.anim,#track.spring{transition:none}}
 .card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:16px;box-shadow:0 10px 34px rgba(24,28,45,.07)}
-.head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:16px}
+.head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:16px;
+padding-top:calc(env(safe-area-inset-top, 20px) + 16px)}
 .brandtitle{margin:0;font-size:19px;font-weight:800;letter-spacing:.14em}
 .datesub{font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--faint);margin-top:3px}
-.gear{width:38px;height:38px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--sub);
-display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
+.gear{width:44px;height:44px;min-width:44px;min-height:44px;border-radius:14px;border:1px solid var(--line);
+background:var(--card);color:var(--sub);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;
+transition:transform .16s cubic-bezier(.34,1.4,.5,1),background .2s,color .2s}
+.gear:active{transform:scale(.92)}
 .gear.on{background:var(--acc);color:#fff;border-color:var(--acc)}
-.gear svg{width:18px;height:18px}
+.gear svg{width:19px;height:19px}
+
 .panel{background:var(--surf);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:14px}
 .ph{display:flex;justify-content:space-between;font-size:12.5px;font-weight:600;color:var(--sub);margin-bottom:8px}
 .bar{background:var(--track);border-radius:9px;overflow:hidden}
@@ -191,6 +195,33 @@ padding:11px 18px;border-radius:14px;font-size:13.5px;font-weight:600;opacity:0;
 .toast.show{opacity:1}
 .confetti{position:fixed;left:0;top:0;right:0;bottom:0;pointer-events:none;z-index:70;overflow:hidden}
 @keyframes fall{to{transform:translateY(110vh) rotate(720deg);opacity:.9}}
+
+/* ===== Pas : édition manuelle + célébration ===== */
+.stepedit{display:flex;gap:6px;align-items:center;justify-content:center;margin-top:9px}
+.stepedit input{width:88px;text-align:center;border:1px solid var(--line);border-radius:10px;padding:7px 8px;
+font-size:13px;font-weight:700;background:var(--inp);color:var(--ink);font-family:inherit}
+.stepedit button{border:1px solid var(--line);background:var(--inp);color:var(--ink);border-radius:10px;
+font-size:11.5px;font-weight:700;padding:7px 10px;cursor:pointer;font-family:inherit}
+.editpen{border:none;background:transparent;color:var(--faint);cursor:pointer;font-size:12px;padding:4px 6px;font-family:inherit}
+.goalhit .rfg,.goalhit .wg-rfg{stroke:#22c55e}
+.goalhit{animation:goalpulse 1.5s ease-in-out infinite}
+@keyframes goalpulse{0%,100%{filter:drop-shadow(0 0 0 rgba(34,197,94,0))}50%{filter:drop-shadow(0 0 9px rgba(34,197,94,.65))}}
+.goalbadge{font-size:10.5px;font-weight:800;color:#16a34a;margin-top:4px}
+.customgoal{display:flex;gap:6px;align-items:center}
+.customgoal input{width:86px;border:1px solid var(--line);border-radius:10px;padding:7px 9px;font-size:13px;
+font-weight:700;background:var(--inp);color:var(--ink);font-family:inherit;text-align:center}
+/* ===== Tutoriel Apple Santé ===== */
+.tcards{display:flex;flex-direction:column;gap:13px}
+.tutocard{background:var(--surf);border:1px solid var(--line);border-radius:22px;padding:16px;
+box-shadow:0 6px 20px rgba(20,22,40,.07)}
+[data-theme="dark"] .tutocard{box-shadow:0 6px 20px rgba(0,0,0,.35)}
+.tutocard h3{margin:0 0 10px;font-size:14.5px;font-weight:800}
+.tutocard ol{margin:0;padding-left:19px;display:flex;flex-direction:column;gap:9px}
+.tutocard li{font-size:13px;line-height:1.45}
+.copybtn{width:100%;justify-content:center;margin-top:13px}
+.linkbox{font-family:ui-monospace,Menlo,monospace;font-size:11.5px;word-break:break-all;background:var(--card);
+border:1px dashed var(--line);border-radius:12px;padding:11px 13px;line-height:1.5;margin-top:12px}
+.bigbtn{width:100%;justify-content:center;margin-top:4px}
 </style>
 </head>
 <body>
@@ -228,7 +259,7 @@ var HNAMES={meditation:{fr:'M\u00e9ditation',en:'Meditation',es:'Meditaci\u00f3n
  sport:{fr:'Sport',en:'Sport',es:'Deporte'}};
 
 var T={
-fr:{week:'Semaine',stats:'Stats',troph:'Troph\u00e9es',tuto:'Tuto',profile:'Profil',weekprog:'Progression de la semaine',
+fr:{wgtitle:'Aujourd\u2019hui',stepsgoalcustom:'Objectif personnalis\u00e9',stepsedit:'Modifier les pas',stepsok:'OK',goalreached:'Objectif de pas atteint \ud83c\udf89',healthbtn:'Configurer la Synchro Apple Sant\u00e9',tutoc1:'1. Cr\u00e9er le Raccourci iOS',tutoc2:'2. Automatiser la synchro',copylink:'Copier mon lien de synchro',copied:'Lien copi\u00e9 \u2713',c1:['Ouvre l\u2019app Raccourcis \u2192 + \u2192 Ajouter une action.','Action \u00ab Rechercher des \u00e9chantillons de Sant\u00e9 \u00bb : type Nombre de pas, plage Aujourd\u2019hui.','Action \u00ab Calculer les statistiques \u00bb : Somme (total des pas du jour).','Action \u00ab Ouvrir des URL \u00bb : colle ton lien ci-dessous, puis ins\u00e8re la variable Somme \u00e0 la fin, apr\u00e8s steps=.'],c2:['Onglet Automatisation \u2192 + \u2192 Heure de la journ\u00e9e (ex. 22:00), tous les jours.','Ou : Automatisation \u2192 App \u2192 Est ferm\u00e9e, pour synchroniser en quittant une app.','Choisis ton raccourci, puis d\u00e9sactive \u00ab Demander avant d\u2019ex\u00e9cuter \u00bb.','Tes pas arrivent alors tout seuls, chaque jour.'],wgexpand:'Agrandir',wgcollapse:'R\u00e9duire',wgnone:'Rien de pr\u00e9vu aujourd\u2019hui',wgall:'Tout est fait \u2728',week:'Semaine',stats:'Stats',troph:'Troph\u00e9es',tuto:'Tuto',profile:'Profil',weekprog:'Progression de la semaine',
 today:"Aujourd'hui",of:'sur',thisweek:'cette semaine',steps:'Pas',water:'Eau',everyday:'Tous les jours',weekdays:'En semaine',
 weekends:'Week-end',onwhich:'Quels jours ?',color:'Couleur',goal:'Objectif (min)',none:'Aucun',addph:'Ajouter une habitude\u2026',
 add:'Ajouter',save:'Enregistrer',cancel:'Annuler',edittitle:'Modifier l\u2019habitude',del:'Supprimer',deleted:'Habitude supprim\u00e9e',
@@ -239,7 +270,7 @@ pcolor:'Couleur jour parfait',synckey:'Cl\u00e9 sync',reset:'R\u00e9initialiser'
 tutointro:"Cr\u00e9e un Raccourci iOS qui appelle ton URL. Tu dis une habitude, Siri la coche. Pour les pas, une automatisation ouvre l\u2019app avec ?steps=XXXX.",
 st:["Ouvre l'app Raccourcis \u2192 +.","Ajoute \u00ab Obtenir le contenu de l'URL \u00bb, m\u00e9thode GET.","Colle l'URL ci-dessous (ou ins\u00e8re \u00ab Dicter le texte \u00bb).","Ajoute \u00ab Obtenir la valeur du dictionnaire \u00bb \u2192 cl\u00e9 message.","Ajoute \u00ab \u00c9noncer le texte \u00bb \u2192 cette valeur.","Nomme-le : \u00ab Dis Siri, coche une habitude \u00bb."],
 note:"Ta cl\u00e9 est dans l'URL \u2014 ne partage pas ce raccourci.",unlockmsg:'D\u00e9bloqu\u00e9 :',swipehint:'Glisse une habitude vers la gauche pour la supprimer'},
-en:{week:'Week',stats:'Stats',troph:'Trophies',tuto:'Guide',profile:'Profile',weekprog:'Week progress',
+en:{wgtitle:'Today',stepsgoalcustom:'Custom goal',stepsedit:'Edit steps',stepsok:'OK',goalreached:'Step goal reached \ud83c\udf89',healthbtn:'Set up Apple Health sync',tutoc1:'1. Create the iOS Shortcut',tutoc2:'2. Automate the sync',copylink:'Copy my sync link',copied:'Link copied \u2713',c1:['Open Shortcuts \u2192 + \u2192 Add action.','Action \"Find Health Samples\": type Step Count, range Today.','Action \"Calculate Statistics\": Sum (today\u2019s total steps).','Action \"Open URLs\": paste your link below, then insert the Sum variable at the end, after steps=.'],c2:['Automation tab \u2192 + \u2192 Time of Day (e.g. 10 pm), every day.','Or: Automation \u2192 App \u2192 Is Closed, to sync when you quit an app.','Pick your shortcut, then turn off \"Ask Before Running\".','Your steps then arrive on their own, every day.'],wgexpand:'Expand',wgcollapse:'Collapse',wgnone:'Nothing scheduled today',wgall:'All done \u2728',week:'Week',stats:'Stats',troph:'Trophies',tuto:'Guide',profile:'Profile',weekprog:'Week progress',
 today:'Today',of:'of',thisweek:'this week',steps:'Steps',water:'Water',everyday:'Every day',weekdays:'Weekdays',
 weekends:'Weekends',onwhich:'On which days?',color:'Color',goal:'Goal (min)',none:'None',addph:'Add a habit\u2026',
 add:'Add',save:'Save',cancel:'Cancel',edittitle:'Edit habit',del:'Delete',deleted:'Habit deleted',
@@ -250,7 +281,7 @@ pcolor:'Perfect-day color',synckey:'Sync key',reset:'Reset',tutotitle:'Check off
 tutointro:'Create an iOS Shortcut that calls your URL. Say a habit, Siri checks it. For steps, an automation opens the app with ?steps=XXXX.',
 st:['Open Shortcuts \u2192 +.','Add "Get Contents of URL", method GET.','Paste the URL below (or insert "Dictate Text").','Add "Get Dictionary Value" \u2192 key message.','Add "Speak Text" \u2192 that value.','Name it: "Hey Siri, check a habit".'],
 note:"Your key is in the URL \u2014 don't share this shortcut.",unlockmsg:'Unlocked:',swipehint:'Swipe a habit left to delete it'},
-es:{week:'Semana',stats:'Estad.',troph:'Trofeos',tuto:'Gu\u00eda',profile:'Perfil',weekprog:'Progreso semanal',
+es:{wgtitle:'Hoy',stepsgoalcustom:'Objetivo personalizado',stepsedit:'Editar pasos',stepsok:'OK',goalreached:'Objetivo de pasos logrado \ud83c\udf89',healthbtn:'Configurar sincro Apple Salud',tutoc1:'1. Crear el Atajo iOS',tutoc2:'2. Automatizar la sincro',copylink:'Copiar mi enlace de sincro',copied:'Enlace copiado \u2713',c1:['Abre Atajos \u2192 + \u2192 A\u00f1adir acci\u00f3n.','Acci\u00f3n \"Buscar muestras de Salud\": tipo N\u00famero de pasos, rango Hoy.','Acci\u00f3n \"Calcular estad\u00edsticas\": Suma (total de pasos de hoy).','Acci\u00f3n \"Abrir URL\": pega tu enlace de abajo e inserta la variable Suma al final, tras steps=.'],c2:['Pesta\u00f1a Automatizaci\u00f3n \u2192 + \u2192 Hora del d\u00eda (p. ej. 22:00), cada d\u00eda.','O: Automatizaci\u00f3n \u2192 App \u2192 Se cierra, para sincronizar al salir de una app.','Elige tu atajo y desactiva \"Preguntar antes de ejecutar\".','Tus pasos llegan solos, cada d\u00eda.'],wgexpand:'Ampliar',wgcollapse:'Reducir',wgnone:'Nada previsto hoy',wgall:'Todo hecho \u2728',week:'Semana',stats:'Estad.',troph:'Trofeos',tuto:'Gu\u00eda',profile:'Perfil',weekprog:'Progreso semanal',
 today:'Hoy',of:'de',thisweek:'esta semana',steps:'Pasos',water:'Agua',everyday:'Todos los d\u00edas',weekdays:'Entre semana',
 weekends:'Fines de semana',onwhich:'\u00bfQu\u00e9 d\u00edas?',color:'Color',goal:'Objetivo (min)',none:'Ninguno',addph:'A\u00f1adir un h\u00e1bito\u2026',
 add:'A\u00f1adir',save:'Guardar',cancel:'Cancelar',edittitle:'Editar h\u00e1bito',del:'Eliminar',deleted:'H\u00e1bito eliminado',
@@ -279,7 +310,7 @@ function seedHabits(){var out=[],i;for(i=0;i<DEFAULT_HABITS.length;i++){var d=DE
  out.push({id:uid(),key:d.key,name:'',sched:fi(d.days),done:ed(),color:d.color,goal:d.goal,mins:{}});}
  return out;}
 function defState(){return{lang:(navigator.language||'fr').slice(0,2),theme:'auto',accent:'green',perfColor:COLORS[0],
- tab:'week',day:DAYS[TODAY],statHabit:'all',sy:NOW.getFullYear(),sm:NOW.getMonth(),
+ tab:'week',day:DAYS[TODAY],wgMode:'condensed',editSteps:false,stepsCelebrated:'',statHabit:'all',sy:NOW.getFullYear(),sm:NOW.getMonth(),
  newName:'',newSched:fi([0,1,2,3,4,5,6]),newColor:COLORS[1],newGoal:0,editId:null,
  water:0,steps:0,wgoal:2000,sgoal:10000,checks:0,streak:0,best:0,voice:false,unlocked:[],habits:seedHabits(),hist:{}};}
 var S=defState();
@@ -294,10 +325,17 @@ function load(){try{var raw=localStorage.getItem(LSKEY);if(!raw)return;var o=JSO
  S.editId=null;}catch(e){}}
 load();
 
-/* --- synchro des pas via ?steps=XXXX (toutes plateformes) --- */
-(function(){try{var p=new URLSearchParams(window.location.search);
- var st=p.get('steps');if(st!==null&&st!==''&&!isNaN(Number(st))){S.steps=Math.max(0,Math.round(Number(st)));save();}
- var wl=p.get('water');if(wl!==null&&wl!==''&&!isNaN(Number(wl))){S.water=Math.max(0,S.water+Math.round(Number(wl)));save();}
+/* --- synchro des pas via ?steps=XXXX (ou ?pas=XXXX) --- */
+(function(){try{
+ var p=new URLSearchParams(window.location.search),touched=false;
+ var raw=p.get('steps');if(raw===null)raw=p.get('pas');
+ if(raw!==null&&raw!==''){
+  var n=Number(String(raw).replace(/[\s,\u00a0]/g,''));
+  if(isFinite(n)&&n>=0&&Math.floor(n)===n){S.steps=Math.round(n);touched=true;}}
+ var wl=p.get('water');
+ if(wl!==null&&wl!==''&&isFinite(Number(wl))){S.water=Math.max(0,S.water+Math.round(Number(wl)));touched=true;}
+ if(touched){save();
+  try{history.replaceState({},document.title,window.location.pathname);}catch(e){}}
 }catch(e){}})();
 
 /* ---------- helpers ---------- */
@@ -319,6 +357,12 @@ function schedTxt(h){var c=sc(h),o=[],i;if(c===7)return t('everyday');
  if(c===5&&h.sched.Monday&&h.sched.Friday&&!h.sched.Saturday&&!h.sched.Sunday)return t('weekdays');
  if(c===2&&h.sched.Saturday&&h.sched.Sunday)return t('weekends');
  for(i=0;i<DAYS.length;i++){if(h.sched[DAYS[i]])o.push(DS[S.lang][i]);}return o.join(', ');}
+function stepsPct(){return S.sgoal>0?Math.round(S.steps/S.sgoal*100):0;}
+function stepsHit(){return S.sgoal>0&&S.steps>=S.sgoal;}
+function celebrateSteps(){
+ var today=todayStr();
+ if(stepsHit()&&S.stepsCelebrated!==today){S.stepsCelebrated=today;save();
+  toast(t('goalreached'));confetti();}}
 function ymd(y,m,d){return y+'-'+('0'+(m+1)).slice(-2)+'-'+('0'+d).slice(-2);}
 function todayStr(){return ymd(NOW.getFullYear(),NOW.getMonth(),NOW.getDate());}
 function perfect(ds){var h=S.hist[ds];if(!h)return false;return S.statHabit==='all'?h.perfect:((h.done||[]).indexOf(S.statHabit)>=0);}
@@ -354,8 +398,9 @@ function habitForm(){
 function vWeek(){
  var w=Math.min(100,Math.round(S.water/S.wgoal*100)),sp=Math.min(100,Math.round(S.steps/S.sgoal*100));
  var C=2*Math.PI*26,off=C*(1-sp/100),i;
- var o='<div class="panel"><div class="ph"><span>'+t('weekprog')+'</span><span style="color:var(--ink);font-weight:700">'+adh()+'%</span></div><div class="bar" style="height:10px"><div class="fill" style="width:'+adh()+'%"></div></div></div>';
- o+='<div class="health"><div class="hmod"><div class="hlab">\ud83d\udc5f '+t('steps')+'</div><div class="ringwrap"><svg viewBox="0 0 64 64" class="ring"><circle cx="32" cy="32" r="26" class="rbg"></circle><circle cx="32" cy="32" r="26" class="rfg" style="stroke-dasharray:'+C.toFixed(1)+';stroke-dashoffset:'+off.toFixed(1)+'"></circle></svg><div class="rnum">'+S.steps.toLocaleString()+'</div></div><div class="hsub">'+sp+'% \u00b7 '+S.sgoal.toLocaleString()+'</div></div>';
+ var o='';
+ o+='<div class="panel"><div class="ph"><span>'+t('weekprog')+'</span><span style="color:var(--ink);font-weight:700">'+adh()+'%</span></div><div class="bar" style="height:10px"><div class="fill" style="width:'+adh()+'%"></div></div></div>';
+ o+='<div class="health"><div class="hmod'+(stepsHit()?' goalhit':'')+'"><div class="hlab">\ud83d\udc5f '+t('steps')+'<button class="editpen" data-a="editsteps">\u270e</button></div><div class="ringwrap"><svg viewBox="0 0 64 64" class="ring"><circle cx="32" cy="32" r="26" class="rbg"></circle><circle cx="32" cy="32" r="26" class="rfg" style="stroke-dasharray:'+C.toFixed(1)+';stroke-dashoffset:'+off.toFixed(1)+'"></circle></svg><div class="rnum">'+S.steps.toLocaleString()+'</div></div><div class="hsub">'+sp+'% \u00b7 '+S.sgoal.toLocaleString()+'</div>'+(stepsHit()?'<div class="goalbadge">\u2713 100%</div>':'')+(S.editSteps?'<div class="stepedit"><input id="stepsin" type="number" inputmode="numeric" min="0" value="'+S.steps+'"><button data-a="savesteps">'+t('stepsok')+'</button></div>':'')+'</div>';
  o+='<div class="hmod"><div class="hlab">\ud83d\udca7 '+t('water')+'</div><div class="gauge"><div class="gfill" style="height:'+w+'%"></div><div class="gnum">'+(S.water/1000).toFixed(2)+'/'+(S.wgoal/1000)+' L</div></div><div class="wbtns"><button class="wbtn" data-a="w" data-v="250">+0.25 L</button><button class="wbtn" data-a="w" data-v="500">+0.5 L</button><button class="wbtn" data-a="w" data-v="1000">+1 L</button><button class="wbtn" data-a="w" data-v="-250">\u2212</button></div></div></div>';
  o+='<div class="days">';
  for(i=0;i<DAYS.length;i++){var d=DAYS[i],a=S.day===d,s2=dayH(d).length;
@@ -416,14 +461,23 @@ function vTroph(){
   (got?'<div class="tunl" style="color:'+a.c+'">\u2713 '+t('unlocked')+'</div>':'<div class="tbar"><div class="tfill2" style="width:'+Math.min(100,Math.round(v/a.th*100))+'%;background:'+a.c+'"></div></div><div class="tprog">'+v+' / '+a.th+'</div>')+'</div>';}
  return o+'</div>';}
 
+function syncLink(){var base='';
+ try{base=window.location.origin+window.location.pathname;}catch(e){}
+ return base+'?steps=';}
 function vTuto(){
- var base='';try{base=window.location.origin+window.location.pathname;}catch(e){}
- var url=base+'api/check?key=TA_CLE&lang='+S.lang+'&habit=course';
- var o='<div class="tuto"><h2>'+t('tutotitle')+'</h2><p>'+t('tutointro')+'</p><ol>',st=T[S.lang].st,i;
- for(i=0;i<st.length;i++){o+='<li>'+st[i]+'</li>';}
- o+='</ol><div class="urlbox">'+esc(url)+'</div>';
- o+='<div class="flab">'+t('steps')+' \u2014 ?steps=XXXX</div><div class="urlbox">'+esc(base+'?steps=8500')+'</div>';
- return o+'<p class="note">'+t('note')+'</p></div>';}
+ var L=S.lang,T1=T[L].c1,T2=T[L].c2,i;
+ var o='<div class="tcards">';
+ o+='<div class="tutocard"><h3>'+t('tutoc1')+'</h3><ol>';
+ for(i=0;i<T1.length;i++){o+='<li>'+T1[i]+'</li>';}
+ o+='</ol><div class="linkbox" id="synclink">'+esc(syncLink())+'</div>';
+ o+='<button class="add copybtn" data-a="copylink">\ud83d\udccb '+t('copylink')+'</button></div>';
+ o+='<div class="tutocard"><h3>'+t('tutoc2')+'</h3><ol>';
+ for(i=0;i<T2.length;i++){o+='<li>'+T2[i]+'</li>';}
+ o+='</ol></div>';
+ o+='<div class="tutocard"><h3>'+t('tutotitle')+'</h3><p style="font-size:13px;color:var(--sub);line-height:1.45;margin:0 0 10px">'+t('tutointro')+'</p><ol>';
+ var st=T[L].st;for(i=0;i<st.length;i++){o+='<li>'+st[i]+'</li>';}
+ o+='</ol><p class="note">'+t('note')+'</p></div>';
+ return o+'</div>';}
 
 function vProfile(){
  var o='<div class="setrow" style="border-top:none"><span class="lbl">'+t('theme')+'</span><div class="segs">',i;
@@ -440,8 +494,10 @@ function vProfile(){
  o+='</div></div><div class="setrow"><span class="lbl">'+t('sgoal')+'</span><div class="pick">';
  var SG=[6000,8000,10000,12000,15000];
  for(i=0;i<SG.length;i++){o+='<button class="gopt'+(S.sgoal===SG[i]?' on':'')+'" data-a="sg" data-v="'+SG[i]+'">'+(SG[i]/1000)+'k</button>';}
+ o+='</div></div><div class="setrow"><span class="lbl">'+t('stepsgoalcustom')+'</span><div class="customgoal"><input id="sgcustom" type="number" inputmode="numeric" min="100" step="100" value="'+S.sgoal+'"><button class="gopt" data-a="sgcustom">'+t('stepsok')+'</button></div>';
  /* même palette que les habitudes, même ordre */
  o+='</div></div><div class="setrow"><span class="lbl">'+t('pcolor')+'</span>'+colorPicker(S.perfColor,'pc','var(--card)')+'</div>';
+ o+='<div class="setrow" style="display:block"><button class="add bigbtn" data-a="healthsetup">\u2764\ufe0f '+t('healthbtn')+'</button></div>';
  o+='<div class="setrow"><span class="lbl">'+t('reset')+'</span><button class="ghost" data-a="resetall">'+t('reset')+'</button></div>';
  return o;}
 
@@ -573,6 +629,7 @@ function goTab(next){
  var x0=0,y0=0,t0=0,lock=null,active=false,dx=0,ready=false;
  function insideNoSwipe(node){
   while(node&&node!==document.body){
+   if(node.id==='bb')return true;                    /* la barre du bas a sa propre logique (sens inversé) */
    if(node.classList&&(node.classList.contains('row')||node.classList.contains('swipe')||node.classList.contains('heatwrap')))return true;
    if(node.tagName&&(node.tagName==='SELECT'||node.tagName==='INPUT'||node.tagName==='TEXTAREA'))return true;
    node=node.parentNode;}
@@ -603,7 +660,48 @@ function goTab(next){
   if(lock==='x'&&ready)finishDrag(0,999);},{passive:true});
 })();
 
+/* ---------- glissement SUR LA BARRE DU BAS (sens inversé : on tire la pastille) ---------- */
+var suppressTabClick=0;
+(function(){
+ var x0=0,y0=0,t0=0,lock=null,active=false,cdx=0,ready=false;
+ function bar(){return document.getElementById('bb');}
+ document.addEventListener('touchstart',function(e){
+  var bb=bar();if(!bb||animBusy||e.touches.length!==1){active=false;return;}
+  if(!bb.contains(e.target)){active=false;return;}
+  var tch=e.touches[0];x0=tch.clientX;y0=tch.clientY;t0=Date.now();lock=null;cdx=0;active=true;ready=false;},{passive:true});
+ document.addEventListener('touchmove',function(e){
+  if(!active||e.touches.length!==1)return;
+  var tch=e.touches[0],mx=tch.clientX-x0,my=tch.clientY-y0;
+  if(lock===null){
+   if(Math.abs(mx)<8&&Math.abs(my)<8)return;
+   lock=(Math.abs(mx)>Math.abs(my)*1.2)?'x':'y';
+   if(lock==='x'){ready=prepareDrag();
+    var ind=document.getElementById('navind');if(ind)ind.classList.add('noanim');}}
+  if(lock!=='x'||!ready)return;
+  if(e.cancelable)e.preventDefault();
+  /* tirer la pastille vers la DROITE (mx>0) = onglet SUIVANT :
+     le contenu doit donc partir vers la gauche -> dx contenu = -mx */
+  cdx=-mx;dragTo(cdx);},{passive:false});
+ document.addEventListener('touchend',function(){
+  if(!active)return;active=false;
+  var ind=document.getElementById('navind');if(ind)ind.classList.remove('noanim');
+  if(lock!=='x'||!ready)return;
+  suppressTabClick=Date.now();          /* évite qu'un glissement soit aussi compris comme un tap */
+  finishDrag(cdx,Date.now()-t0);},{passive:true});
+ document.addEventListener('touchcancel',function(){
+  if(!active)return;active=false;
+  var ind=document.getElementById('navind');if(ind)ind.classList.remove('noanim');
+  if(lock==='x'&&ready)finishDrag(0,999);},{passive:true});
+})();
+
 /* ---------- feedback ---------- */
+function copyLink(){var txt=syncLink();
+ function done(){toast(t('copied'));}
+ try{if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(done,fallback);return;}}catch(e){}
+ fallback();
+ function fallback(){try{var ta=document.createElement('textarea');ta.value=txt;
+  ta.style.cssText='position:fixed;top:0;left:0;opacity:0';document.body.appendChild(ta);
+  ta.focus();ta.select();document.execCommand('copy');document.body.removeChild(ta);done();}catch(e){toast(txt);}}}
 function toast(m){var e=document.getElementById('toast');e.textContent=m;e.className='toast show';
  clearTimeout(toast.t);toast.t=setTimeout(function(){e.className='toast';},2200);}
 function confetti(){var c=document.createElement('div');c.className='confetti';document.body.appendChild(c);
@@ -650,9 +748,14 @@ document.addEventListener('click',function(e){
  while(el&&el!==document.body&&!(el.getAttribute&&el.getAttribute('data-a'))){el=el.parentNode;}
  if(!el||el===document.body)return;
  var a=el.getAttribute('data-a'),v=el.getAttribute('data-v'),h;
- if(a==='tab'){goTab(v);return;}
+ if(a==='tab'){if(Date.now()-suppressTabClick<420)return;goTab(v);return;}
  else if(a==='day'){S.day=v;}
  else if(a==='tog'){h=getH(v);if(h){h.done[S.day]=!h.done[S.day];if(h.done[S.day])S.checks++;recordHistory();}}
+ else if(a==='wtog'){h=getH(v);if(h){var dW=DAYS[TODAY];h.done[dW]=!h.done[dW];
+  if(h.done[dW]){S.checks++;if(h.goal)h.mins[dW]=Math.max(h.mins[dW]||0,h.goal);}
+  else if(h.goal){h.mins[dW]=0;}
+  recordHistory();}}
+ else if(a==='wgmode'){S.wgMode=S.wgMode==='condensed'?'expanded':'condensed';}
  else if(a==='min'){h=getH(v);var n=parseInt(el.getAttribute('data-n'),10);
   if(h){h.mins[S.day]=Math.max(0,(h.mins[S.day]||0)+n);if(h.goal)h.done[S.day]=h.mins[S.day]>=h.goal;recordHistory();}}
  else if(a==='w'){S.water=Math.max(0,S.water+parseInt(v,10));}
@@ -677,7 +780,14 @@ document.addEventListener('click',function(e){
  else if(a==='lang'){S.lang=v;}
  else if(a==='ac'){S.accent=v;theme();}
  else if(a==='wg'){S.wgoal=parseInt(v,10);}
- else if(a==='sg'){S.sgoal=parseInt(v,10);}
+ else if(a==='sg'){S.sgoal=parseInt(v,10);celebrateSteps();}
+ else if(a==='sgcustom'){var gi=document.getElementById('sgcustom'),gv=gi?parseInt(gi.value,10):NaN;
+  if(isFinite(gv)&&gv>=100){S.sgoal=Math.round(gv);celebrateSteps();}}
+ else if(a==='editsteps'){S.editSteps=!S.editSteps;if(S.editSteps&&S.tab!=='week'){goTab('week');save();return;}}
+ else if(a==='savesteps'){var si=document.getElementById('stepsin'),sv=si?parseInt(si.value,10):NaN;
+  if(isFinite(sv)&&sv>=0){S.steps=Math.round(sv);celebrateSteps();}S.editSteps=false;}
+ else if(a==='healthsetup'){goTab('tuto');return;}
+ else if(a==='copylink'){copyLink();return;}
  else if(a==='pc'){S.perfColor=v;}
  else if(a==='resetall'){S=defState();theme();}
  else{return;}
@@ -733,6 +843,7 @@ theme();
 S.unlocked=[];
 (function(){var i;for(i=0;i<ACH.length;i++){if(ACH[i].v()>=ACH[i].th)S.unlocked.push(ACH[i].id);}})();
 render();
+celebrateSteps();
 </script>
 </body>
 </html>
