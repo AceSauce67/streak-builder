@@ -347,18 +347,10 @@ h1, h2, h3 { margin: 0; }
   margin-top: 2px;
 }
 
-/* Module d'ajout d'habitude enrichi */
-.add-card {
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: 20px;
-  padding: 14px;
-  margin-top: 16px;
-}
 .add-form {
   display: flex;
   gap: 8px;
-  margin-bottom: 12px;
+  margin-top: 14px;
 }
 .add-inp {
   flex: 1;
@@ -379,55 +371,6 @@ h1, h2, h3 { margin: 0; }
   padding: 10px 16px;
   font-weight: 700;
   cursor: pointer;
-}
-
-.freq-label {
-  font-size: 12px;
-  color: var(--sub);
-  font-weight: 700;
-  margin-bottom: 8px;
-}
-.freq-days-row {
-  display: flex;
-  gap: 6px;
-  margin-bottom: 10px;
-}
-.form-day-btn {
-  flex: 1;
-  height: 38px;
-  border-radius: 12px;
-  border: 1px solid var(--line);
-  background: var(--surface2);
-  color: var(--sub);
-  font-weight: 800;
-  font-size: 11px;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-.form-day-btn.selected {
-  background: var(--accent);
-  color: #fff;
-  border-color: var(--accent);
-}
-.freq-presets-row {
-  display: flex;
-  gap: 6px;
-}
-.preset-btn {
-  padding: 6px 12px;
-  border-radius: 18px;
-  border: 1px solid var(--line);
-  background: var(--form-bg);
-  color: var(--sub);
-  font-size: 11px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-.preset-btn:active {
-  background: var(--accent-soft);
-  border-color: var(--accent);
-  color: var(--accent-light);
 }
 
 .bottombar {
@@ -560,7 +503,7 @@ h1, h2, h3 { margin: 0; }
       <button class="lang-btn" id="lang-es" onclick="setLanguage('es')">ES</button>
     </div>
 
-    <!-- Days Selector Header -->
+    <!-- Days Selector -->
     <div class="days-grid" id="daysGrid"></div>
 
     <!-- Main Tab: Week -->
@@ -607,22 +550,10 @@ h1, h2, h3 { margin: 0; }
       <!-- Habits List -->
       <div class="habit-list" id="habitsList"></div>
 
-      <!-- Module d'ajout complet avec sélection des jours -->
-      <div class="add-card">
-        <div class="add-form">
-          <input type="text" class="add-inp" id="newHabitInp" placeholder="Ajouter une habitude..." />
-          <button class="add-btn" onclick="addNewHabit()" id="lbl-addbtn">Ajouter</button>
-        </div>
-
-        <div class="freq-section">
-          <div class="freq-label" id="lbl-whichdays">Quels jours ?</div>
-          <div class="freq-days-row" id="formDaysGrid"></div>
-          <div class="freq-presets-row">
-            <button class="preset-btn" id="btn-freq-every" onclick="selectPreset('every')">Tous les jours</button>
-            <button class="preset-btn" id="btn-freq-weekdays" onclick="selectPreset('weekdays')">Semaine</button>
-            <button class="preset-btn" id="btn-freq-weekends" onclick="selectPreset('weekends')">Week-end</button>
-          </div>
-        </div>
+      <!-- Add Habit Input -->
+      <div class="add-form">
+        <input type="text" class="add-inp" id="newHabitInp" placeholder="Nouvelle habitude..." />
+        <button class="add-btn" onclick="addNewHabit()" id="lbl-addbtn">Ajouter</button>
       </div>
     </div>
 
@@ -675,12 +606,6 @@ const DSHORT = {
   es: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom']
 };
 
-const FORM_DAYS = {
-  fr: ['Lu', 'Ma', 'Me', 'Je', 'Ve', 'Sa', 'Di'],
-  en: ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'],
-  es: ['Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sá', 'Do']
-};
-
 const DEFAULT_HABITS = {
   fr: [
     { id: 1, name: "Musculation & Force", streak: 5, done: true },
@@ -705,11 +630,7 @@ const DEFAULT_HABITS = {
 const UI_TEXT = {
   fr: {
     water: "EAU", steps: "PAS", stepgoal: "Obj: 10,000",
-    progtitle: "PROGRESSION DU JOUR", addph: "Ajouter une habitude...", addbtn: "Ajouter",
-    whichDays: "Quels jours ?",
-    freqEvery: "Tous les jours",
-    freqWeekdays: "Semaine",
-    freqWeekends: "Week-end",
+    progtitle: "PROGRESSION DU JOUR", addph: "Nouvelle habitude...", addbtn: "Ajouter",
     navWeek: "Semaine", navStats: "Stats", navTrophies: "Trophées", navSiri: "Siri",
     settitle: "Réglages", setdesc: "Vos données sont enregistrées localement sur votre iPhone.",
     resetbtn: "Réinitialiser les habitudes",
@@ -724,11 +645,7 @@ const UI_TEXT = {
   },
   en: {
     water: "WATER", steps: "STEPS", stepgoal: "Goal: 10,000",
-    progtitle: "DAILY PROGRESS", addph: "Add habit...", addbtn: "Add",
-    whichDays: "Which days?",
-    freqEvery: "Every day",
-    freqWeekdays: "Weekdays",
-    freqWeekends: "Weekends",
+    progtitle: "DAILY PROGRESS", addph: "New habit...", addbtn: "Add",
     navWeek: "Week", navStats: "Stats", navTrophies: "Trophies", navSiri: "Siri",
     settitle: "Settings", setdesc: "Your data is saved locally on your iPhone.",
     resetbtn: "Reset habits",
@@ -743,11 +660,7 @@ const UI_TEXT = {
   },
   es: {
     water: "AGUA", steps: "PASOS", stepgoal: "Meta: 10,000",
-    progtitle: "PROGRESO DIARIO", addph: "Añadir hábito...", addbtn: "Añadir",
-    whichDays: "¿Qué días?",
-    freqEvery: "Todos los días",
-    freqWeekdays: "Días laborables",
-    freqWeekends: "Fines de semana",
+    progtitle: "PROGRESO DIARIO", addph: "Nuevo hábito...", addbtn: "Añadir",
     navWeek: "Semana", navStats: "Estadísticas", navTrophies: "Trofeos", navSiri: "Siri",
     settitle: "Ajustes", setdesc: "Tus datos se guardan localmente en tu iPhone.",
     resetbtn: "Restablecer hábitos",
@@ -767,7 +680,6 @@ let theme = localStorage.getItem('sb_theme') || 'dark';
 let habits = JSON.parse(localStorage.getItem('sb_habits_' + lang)) || DEFAULT_HABITS[lang];
 let waterCl = parseInt(localStorage.getItem('sb_water') || '125');
 let selectedDay = (new Date().getDay() + 6) % 7;
-let selectedFormDays = [true, true, true, true, true, true, true];
 
 document.addEventListener('DOMContentLoaded', () => {
   applyTheme(theme);
@@ -817,10 +729,6 @@ function setLanguage(l) {
   document.getElementById('lbl-progtitle').textContent = t.progtitle;
   document.getElementById('newHabitInp').placeholder = t.addph;
   document.getElementById('lbl-addbtn').textContent = t.addbtn;
-  document.getElementById('lbl-whichdays').textContent = t.whichDays;
-  document.getElementById('btn-freq-every').textContent = t.freqEvery;
-  document.getElementById('btn-freq-weekdays').textContent = t.freqWeekdays;
-  document.getElementById('btn-freq-weekends').textContent = t.freqWeekends;
   document.getElementById('nav-week').textContent = t.navWeek;
   document.getElementById('nav-stats').textContent = t.navStats;
   document.getElementById('nav-trophies').textContent = t.navTrophies;
@@ -830,39 +738,10 @@ function setLanguage(l) {
   document.getElementById('lbl-resetbtn').textContent = t.resetbtn;
   document.getElementById('siriHelp').innerHTML = t.siri;
 
-  renderFormDays();
   renderTrophies();
   renderDays();
   renderHabits();
   renderDate();
-}
-
-function renderFormDays() {
-  const grid = document.getElementById('formDaysGrid');
-  grid.innerHTML = '';
-  const days = FORM_DAYS[lang];
-  days.forEach((dayName, idx) => {
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = `form-day-btn ${selectedFormDays[idx] ? 'selected' : ''}`;
-    btn.textContent = dayName;
-    btn.onclick = () => {
-      selectedFormDays[idx] = !selectedFormDays[idx];
-      renderFormDays();
-    };
-    grid.appendChild(btn);
-  });
-}
-
-function selectPreset(type) {
-  if (type === 'every') {
-    selectedFormDays = [true, true, true, true, true, true, true];
-  } else if (type === 'weekdays') {
-    selectedFormDays = [true, true, true, true, true, false, false];
-  } else if (type === 'weekends') {
-    selectedFormDays = [false, false, false, false, false, true, true];
-  }
-  renderFormDays();
 }
 
 function renderDate() {
@@ -940,7 +819,7 @@ function addNewHabit() {
   const name = inp.value.trim();
   if (!name) return;
 
-  habits.push({ id: Date.now(), name, streak: 0, done: false, days: [...selectedFormDays] });
+  habits.push({ id: Date.now(), name, streak: 0, done: false });
   inp.value = '';
   renderHabits();
 }
