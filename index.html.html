@@ -2,7 +2,10 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="theme-color" content="#121212"/>
 <title>Streak Builder</title>
 <style>
 :root{--ink:#111827;--sub:#6b7280;--faint:#9ca3af;--line:#e6e8ee;--soft:#f0f1f5;--card:#fff;--surf:#f7f8fb;
@@ -10,10 +13,18 @@
 [data-theme="dark"]{--ink:#f2f3f8;--sub:#a7adba;--faint:#7c8291;--line:#33353f;--soft:#2a2c34;--card:#1e1f27;
 --surf:#262832;--surf2:#2a2c37;--track:#2f313d;--inp:#262832;--accS:#16a34a3d}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{max-width:100vw;overflow-x:hidden;overscroll-behavior:none;
+touch-action:manipulation;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+html{background:#121212}
+button,.card,.row,.swipe,.hmod,.calcard,.tcard,.rec,.form,.panel,.bb,.gear,.sw,.gopt,.pday,.preset,.minbtn,.wbtn,
+.daycol,.editbtn,.calnav,.add,.ghost,.seg,.wbtn,select,input{touch-action:manipulation}
 body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;
-background:linear-gradient(160deg,#f3f4f8,#e9eaf2);min-height:100vh;padding:14px 12px 150px;color:var(--ink)}
-[data-theme="dark"] body{background:linear-gradient(160deg,#15161c,#1b1c24)}
-#app{max-width:440px;margin:0 auto;will-change:transform;transform:translateZ(0);
+background:linear-gradient(160deg,#f3f4f8,#e9eaf2);min-height:100vh;min-height:100dvh;
+padding:14px 12px calc(150px + env(safe-area-inset-bottom));color:var(--ink);
+padding-left:max(12px,env(safe-area-inset-left));padding-right:max(12px,env(safe-area-inset-right));
+width:100%;position:relative}
+[data-theme="dark"] body{background:linear-gradient(160deg,#121212,#1b1c24)}
+#app{max-width:min(440px,100%);width:100%;margin:0 auto;overflow-x:hidden;will-change:transform;transform:translateZ(0);
 backface-visibility:hidden;-webkit-backface-visibility:hidden}
 #app.anim{transition:transform .26s cubic-bezier(.22,1,.36,1),opacity .26s ease}
 #app.dragging{transition:none}
@@ -614,6 +625,30 @@ document.addEventListener('click',function(e){
 
 document.addEventListener('change',function(e){if(e.target&&e.target.id==='sf'){S.statHabit=e.target.value;save();render();}});
 document.addEventListener('input',function(e){if(e.target&&e.target.id==='nn')S.newName=e.target.value;});
+/* ---------- blocage strict du zoom (pincement + double-tap) ---------- */
+(function(){
+ ['gesturestart','gesturechange','gestureend'].forEach(function(ev){
+  document.addEventListener(ev,function(e){if(e.cancelable)e.preventDefault();},{passive:false});});
+ /* pincement à 2 doigts */
+ document.addEventListener('touchmove',function(e){
+  if(e.touches&&e.touches.length>1&&e.cancelable)e.preventDefault();},{passive:false});
+ /* double-tap rapide : neutralisé UNIQUEMENT hors des contrôles,
+    pour ne pas bloquer les appuis répétés (+5 min, +0.5 L, jours…) */
+ function isControl(n){while(n&&n!==document.body){
+   if(n.tagName&&['BUTTON','INPUT','SELECT','TEXTAREA','LABEL','A','OPTION'].indexOf(n.tagName)>=0)return true;
+   n=n.parentNode;}return false;}
+ var lastTap=0;
+ document.addEventListener('touchend',function(e){
+  if(isControl(e.target)){lastTap=0;return;}
+  var now=Date.now();
+  if(now-lastTap<320&&e.cancelable)e.preventDefault();
+  lastTap=now;},{passive:false});
+ /* raccourcis clavier de zoom (desktop) */
+ document.addEventListener('wheel',function(e){if(e.ctrlKey&&e.cancelable)e.preventDefault();},{passive:false});
+ document.addEventListener('keydown',function(e){
+  if((e.ctrlKey||e.metaKey)&&['+','-','=','0'].indexOf(e.key)>=0)e.preventDefault();},{passive:false});
+})();
+
 try{window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',function(){if(S.theme==='auto'){theme();render();}});}catch(e){}
 
 /* --- retour tactile immédiat sur les onglets (rebond de l'icône) --- */
