@@ -12,42 +12,42 @@
 <link rel="manifest" href="manifest.json"/>
 
 <style>
-:root{
-  --bg1:#15161c; --bg2:#1b1c24;
-  --card:#1e1f27; --surface:#262832; --surface2:#2a2c37; --form-bg:#22232c;
-  --track:#2f313d; --bartrack:#2f313d; --tab-on:#383a46;
-  --line:#33353f; --line-soft:#2a2c34;
-  --ink:#f2f3f8; --sub:#a7adba; --faint:#7c8291; --faint2:#4b4e5a;
-  --inp-bg:#262832; --row-active:#2a2c37; --cbx-border:#454956;
-  --shadow:0 10px 34px rgba(0,0,0,.4);
-  --green:#22c55e; --amber:#f59e0b; --danger:#f87171;
-  --accent:#6d5cf0; --accent-light:#9b8bff; --accent-soft:rgba(109,92,240,0.18);
-}
-[data-theme="light"]{
-  --bg1:#f3f4f8; --bg2:#edeef6;
-  --card:#ffffff; --surface:#f7f8fb; --surface2:#f1f2f7; --form-bg:#fafbfd;
-  --track:#eef0f5; --bartrack:#eceef3; --tab-on:#ffffff;
-  --line:#e6e8ee; --line-soft:#f0f1f5;
-  --ink:#111827; --sub:#6b7280; --faint:#9ca3af; --faint2:#d4d7de;
-  --inp-bg:#ffffff; --row-active:#f4f5f8; --cbx-border:#d3d7e0;
-  --shadow:0 10px 34px rgba(24,28,45,.07);
-  --danger:#ef4444;
-  --accent-soft:#efedff;
+:root {
+  --bg1: #15161c;
+  --bg2: #1b1c24;
+  --card: #1e1f27;
+  --surface: #262832;
+  --surface2: #2a2c37;
+  --form-bg: #22232c;
+  --track: #2f313d;
+  --line: #33353f;
+  --ink: #f2f3f8;
+  --sub: #a7adba;
+  --faint: #7c8291;
+  --cbx-border: #454956;
+  --shadow: 0 10px 34px rgba(0,0,0,.4);
+  --green: #16a34a;
+  --green-soft: rgba(22, 163, 74, 0.25);
+  --amber: #f59e0b;
+  --danger: #f87171;
+  --accent: #635bff;
+  --accent-light: #8b85ff;
+  --accent-soft: rgba(99, 91, 255, 0.25);
 }
 
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html, body{
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+html, body {
   margin: 0;
   padding: 0;
   width: 100%;
-  height: 100%;
+  min-height: 100vh;
   background-color: var(--bg1);
   background: linear-gradient(160deg, var(--bg1), var(--bg2));
   background-attachment: fixed;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   color: var(--ink);
   overflow-x: hidden;
-  transition: background-color 0.3s;
 }
 
 .app-container {
@@ -68,7 +68,6 @@ h1, h2, h3 { margin: 0; }
   padding: 20px;
   box-shadow: var(--shadow);
   margin-bottom: 20px;
-  transition: background .3s, border-color .3s;
 }
 
 .head {
@@ -87,7 +86,7 @@ h1, h2, h3 { margin: 0; }
   font-size: 11px;
   font-weight: 700;
   letter-spacing: .08em;
-  color: var(--accent);
+  color: var(--accent-light);
   margin-top: 3px;
   text-transform: uppercase;
 }
@@ -158,7 +157,7 @@ h1, h2, h3 { margin: 0; }
   color: var(--faint);
   text-transform: uppercase;
 }
-.day-name.today { color: var(--accent); }
+.day-name.today { color: var(--accent-light); }
 .day-track {
   position: relative;
   width: 100%;
@@ -175,7 +174,7 @@ h1, h2, h3 { margin: 0; }
   bottom: 0; left: 0; right: 0;
   background: linear-gradient(180deg, var(--accent-light), var(--accent));
   border-radius: 12px;
-  transition: height .3s cubic-bezier(.4,0,.2,1);
+  transition: height .3s ease;
 }
 
 .health-grid {
@@ -238,7 +237,7 @@ h1, h2, h3 { margin: 0; }
 }
 .wbtn {
   border: 1px solid var(--line);
-  background: var(--inp-bg);
+  background: var(--card);
   color: var(--ink);
   border-radius: 8px;
   font-size: 10px;
@@ -246,7 +245,7 @@ h1, h2, h3 { margin: 0; }
   padding: 5px 7px;
   cursor: pointer;
 }
-.wbtn:active { border-color: var(--accent); color: var(--accent); }
+.wbtn:active { border-color: var(--accent); color: var(--accent-light); }
 
 .ringwrap {
   position: relative;
@@ -291,7 +290,7 @@ h1, h2, h3 { margin: 0; }
 }
 .progress-bar-fill {
   height: 100%;
-  background: linear-gradient(90deg, var(--accent), var(--accent-light));
+  background: linear-gradient(90deg, var(--green), #22c55e);
   border-radius: 8px;
   transition: width .4s ease;
 }
@@ -321,13 +320,13 @@ h1, h2, h3 { margin: 0; }
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--inp-bg);
+  background: var(--card);
   flex-shrink: 0;
   font-weight: bold;
 }
 .cbx.done {
-  background: var(--green);
-  border-color: var(--green);
+  background: var(--habit-color, var(--green));
+  border-color: var(--habit-color, var(--green));
   color: #fff;
 }
 .habit-mid { flex: 1; min-width: 0; }
@@ -346,32 +345,154 @@ h1, h2, h3 { margin: 0; }
   font-weight: 700;
   margin-top: 2px;
 }
+.habit-goal-tag {
+  font-size: 10px;
+  color: var(--sub);
+  background: var(--surface2);
+  padding: 2px 6px;
+  border-radius: 6px;
+  margin-left: 6px;
+}
 
-.add-form {
-  display: flex;
-  gap: 8px;
-  margin-top: 14px;
+/* Formulaire d'ajout d'habitude identique à l'image */
+.add-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 18px;
+  margin-top: 16px;
 }
 .add-inp {
-  flex: 1;
+  width: 100%;
   border: 1px solid var(--line);
-  border-radius: 12px;
-  padding: 10px 14px;
+  border-radius: 14px;
+  padding: 12px 14px;
   font-size: 14px;
-  background: var(--inp-bg);
+  background: var(--card);
   color: var(--ink);
   outline: none;
+  margin-bottom: 14px;
 }
-.add-inp:focus { border-color: var(--accent); }
-.add-btn {
-  border: none;
-  background: var(--accent);
-  color: #fff;
+.add-inp:focus { border-color: var(--green); }
+
+.freq-label {
+  font-size: 12px;
+  color: var(--sub);
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.freq-days-row {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+.form-day-btn {
+  flex: 1;
+  height: 38px;
   border-radius: 12px;
-  padding: 10px 16px;
+  border: none;
+  background: var(--surface2);
+  color: var(--sub);
+  font-weight: 800;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.form-day-btn.selected {
+  background: var(--green);
+  color: #ffffff;
+}
+
+.freq-presets-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.preset-btn {
+  padding: 7px 14px;
+  border-radius: 20px;
+  border: 1px solid var(--line);
+  background: var(--card);
+  color: var(--sub);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.preset-btn:active, .preset-btn.selected {
+  background: var(--surface2);
+  color: var(--ink);
+}
+
+/* Palette de couleurs */
+.color-picker-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.color-dot {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+.color-dot:active { transform: scale(0.9); }
+.color-dot.selected {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+  transform: scale(1.1);
+}
+
+/* Objectif (min) */
+.goal-row {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 18px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+.goal-btn {
+  padding: 8px 14px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: var(--card);
+  color: var(--sub);
+  font-size: 12px;
   font-weight: 700;
   cursor: pointer;
+  white-space: nowrap;
 }
+.goal-btn.selected {
+  background: var(--green);
+  color: #ffffff;
+  border-color: var(--green);
+}
+
+/* Bouton d'ajout aligné à droite */
+.add-action-row {
+  display: flex;
+  justify-content: flex-end;
+}
+.add-btn-green {
+  border: none;
+  background: var(--green);
+  color: #ffffff;
+  border-radius: 14px;
+  padding: 10px 22px;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  box-shadow: 0 4px 12px var(--green-soft);
+}
+.add-btn-green:active { transform: scale(0.96); }
 
 .bottombar {
   position: fixed;
@@ -385,16 +506,11 @@ h1, h2, h3 { margin: 0; }
   padding: 6px;
   border-radius: 22px;
   z-index: 40;
-  background: rgba(30, 31, 39, 0.75);
+  background: rgba(30, 31, 39, 0.85);
   -webkit-backdrop-filter: blur(20px);
   backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.12);
   box-shadow: 0 12px 34px rgba(0, 0, 0, 0.4);
-}
-[data-theme="light"] .bottombar {
-  background: rgba(255, 255, 255, 0.75);
-  border: 1px solid rgba(255, 255, 255, 0.8);
-  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.12);
 }
 
 .bbtab {
@@ -491,7 +607,6 @@ h1, h2, h3 { margin: 0; }
         <div class="datesub" id="dateDisplay">--</div>
       </div>
       <div class="head-actions">
-        <button class="icon-btn" onclick="toggleTheme()" id="themeBtn">🌙</button>
         <button class="icon-btn" onclick="openSettings()">⚙️</button>
       </div>
     </div>
@@ -503,7 +618,7 @@ h1, h2, h3 { margin: 0; }
       <button class="lang-btn" id="lang-es" onclick="setLanguage('es')">ES</button>
     </div>
 
-    <!-- Days Selector -->
+    <!-- Days Selector Header -->
     <div class="days-grid" id="daysGrid"></div>
 
     <!-- Main Tab: Week -->
@@ -539,8 +654,8 @@ h1, h2, h3 { margin: 0; }
       <!-- Progress Bar -->
       <div class="progress-panel">
         <div class="progress-head">
-          <span id="lbl-progtitle">PROGRESSION</span>
-          <span id="progText" style="color:var(--accent);">0%</span>
+          <span id="lbl-progtitle">PROGRESSION DU JOUR</span>
+          <span id="progText" style="color:var(--green);">0%</span>
         </div>
         <div class="progress-bar-bg">
           <div class="progress-bar-fill" id="progBar" style="width: 0%;"></div>
@@ -550,10 +665,31 @@ h1, h2, h3 { margin: 0; }
       <!-- Habits List -->
       <div class="habit-list" id="habitsList"></div>
 
-      <!-- Add Habit Input -->
-      <div class="add-form">
-        <input type="text" class="add-inp" id="newHabitInp" placeholder="Nouvelle habitude..." />
-        <button class="add-btn" onclick="addNewHabit()" id="lbl-addbtn">Ajouter</button>
+      <!-- Module d'ajout exact à l'image -->
+      <div class="add-card">
+        <input type="text" class="add-inp" id="newHabitInp" placeholder="Ajouter une habitude..." />
+
+        <!-- Quels jours ? -->
+        <div class="freq-label" id="lbl-whichdays">Quels jours ?</div>
+        <div class="freq-days-row" id="formDaysGrid"></div>
+        <div class="freq-presets-row">
+          <button class="preset-btn" id="btn-freq-every" onclick="selectPreset('every')">Tous les jours</button>
+          <button class="preset-btn" id="btn-freq-weekdays" onclick="selectPreset('weekdays')">En semaine</button>
+          <button class="preset-btn" id="btn-freq-weekends" onclick="selectPreset('weekends')">Week-end</button>
+        </div>
+
+        <!-- Couleur -->
+        <div class="freq-label" id="lbl-color">Couleur</div>
+        <div class="color-picker-row" id="colorPicker"></div>
+
+        <!-- Objectif (min) -->
+        <div class="freq-label" id="lbl-goal">Objectif (min)</div>
+        <div class="goal-row" id="goalGrid"></div>
+
+        <!-- Bouton + Ajouter -->
+        <div class="add-action-row">
+          <button class="add-btn-green" onclick="addNewHabit()" id="lbl-addbtn">+ Ajouter</button>
+        </div>
       </div>
     </div>
 
@@ -606,31 +742,51 @@ const DSHORT = {
   es: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom']
 };
 
+const FORM_DAYS = {
+  fr: ['Lu', 'Ma', 'Me', 'Je', 'Ve', 'Sa', 'Di'],
+  en: ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'],
+  es: ['Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sá', 'Do']
+};
+
+const PALETTE = [
+  '#6366f1', '#3b82f6', '#06b6d4', '#14b8a6', '#10b981', 
+  '#16a34a', '#f59e0b', '#f97316', '#ef4444', '#ec4899'
+];
+
+const GOAL_OPTIONS = ['Aucun', 5, 10, 15, 20, 30, 45, 60];
+
 const DEFAULT_HABITS = {
   fr: [
-    { id: 1, name: "Musculation & Force", streak: 5, done: true },
-    { id: 2, name: "Course & Sprint", streak: 3, done: true },
-    { id: 3, name: "Lecture (20 min)", streak: 12, done: false },
-    { id: 4, name: "Méditation", streak: 0, done: false }
+    { id: 1, name: "Musculation & Force", streak: 5, done: true, color: '#16a34a', goal: 'Aucun' },
+    { id: 2, name: "Course & Sprint", streak: 3, done: true, color: '#3b82f6', goal: 20 },
+    { id: 3, name: "Lecture", streak: 12, done: false, color: '#f59e0b', goal: 20 },
+    { id: 4, name: "Méditation", streak: 0, done: false, color: '#6366f1', goal: 10 }
   ],
   en: [
-    { id: 1, name: "Strength Training", streak: 5, done: true },
-    { id: 2, name: "Running & Sprinting", streak: 3, done: true },
-    { id: 3, name: "Reading (20 min)", streak: 12, done: false },
-    { id: 4, name: "Meditation", streak: 0, done: false }
+    { id: 1, name: "Strength Training", streak: 5, done: true, color: '#16a34a', goal: 'None' },
+    { id: 2, name: "Running & Sprinting", streak: 3, done: true, color: '#3b82f6', goal: 20 },
+    { id: 3, name: "Reading", streak: 12, done: false, color: '#f59e0b', goal: 20 },
+    { id: 4, name: "Meditation", streak: 0, done: false, color: '#6366f1', goal: 10 }
   ],
   es: [
-    { id: 1, name: "Entrenamiento de Fuerza", streak: 5, done: true },
-    { id: 2, name: "Carrera y Sprints", streak: 3, done: true },
-    { id: 3, name: "Lectura (20 min)", streak: 12, done: false },
-    { id: 4, name: "Meditación", streak: 0, done: false }
+    { id: 1, name: "Entrenamiento de Fuerza", streak: 5, done: true, color: '#16a34a', goal: 'Ninguno' },
+    { id: 2, name: "Carrera y Sprints", streak: 3, done: true, color: '#3b82f6', goal: 20 },
+    { id: 3, name: "Lectura", streak: 12, done: false, color: '#f59e0b', goal: 20 },
+    { id: 4, name: "Meditación", streak: 0, done: false, color: '#6366f1', goal: 10 }
   ]
 };
 
 const UI_TEXT = {
   fr: {
     water: "EAU", steps: "PAS", stepgoal: "Obj: 10,000",
-    progtitle: "PROGRESSION DU JOUR", addph: "Nouvelle habitude...", addbtn: "Ajouter",
+    progtitle: "PROGRESSION DU JOUR", addph: "Ajouter une habitude...", addbtn: "+ Ajouter",
+    whichDays: "Quels jours ?",
+    freqEvery: "Tous les jours",
+    freqWeekdays: "En semaine",
+    freqWeekends: "Week-end",
+    colorLabel: "Couleur",
+    goalLabel: "Objectif (min)",
+    noneGoal: "Aucun",
     navWeek: "Semaine", navStats: "Stats", navTrophies: "Trophées", navSiri: "Siri",
     settitle: "Réglages", setdesc: "Vos données sont enregistrées localement sur votre iPhone.",
     resetbtn: "Réinitialiser les habitudes",
@@ -645,7 +801,14 @@ const UI_TEXT = {
   },
   en: {
     water: "WATER", steps: "STEPS", stepgoal: "Goal: 10,000",
-    progtitle: "DAILY PROGRESS", addph: "New habit...", addbtn: "Add",
+    progtitle: "DAILY PROGRESS", addph: "Add habit...", addbtn: "+ Add",
+    whichDays: "Which days?",
+    freqEvery: "Every day",
+    freqWeekdays: "Weekdays",
+    freqWeekends: "Weekends",
+    colorLabel: "Color",
+    goalLabel: "Goal (min)",
+    noneGoal: "None",
     navWeek: "Week", navStats: "Stats", navTrophies: "Trophies", navSiri: "Siri",
     settitle: "Settings", setdesc: "Your data is saved locally on your iPhone.",
     resetbtn: "Reset habits",
@@ -660,7 +823,14 @@ const UI_TEXT = {
   },
   es: {
     water: "AGUA", steps: "PASOS", stepgoal: "Meta: 10,000",
-    progtitle: "PROGRESO DIARIO", addph: "Nuevo hábito...", addbtn: "Añadir",
+    progtitle: "PROGRESO DIARIO", addph: "Añadir hábito...", addbtn: "+ Añadir",
+    whichDays: "¿Qué días?",
+    freqEvery: "Todos los días",
+    freqWeekdays: "Días laborables",
+    freqWeekends: "Fines de semana",
+    colorLabel: "Color",
+    goalLabel: "Objetivo (min)",
+    noneGoal: "Ninguno",
     navWeek: "Semana", navStats: "Estadísticas", navTrophies: "Trofeos", navSiri: "Siri",
     settitle: "Ajustes", setdesc: "Tus datos se guardan localmente en tu iPhone.",
     resetbtn: "Restablecer hábitos",
@@ -676,35 +846,20 @@ const UI_TEXT = {
 };
 
 let lang = localStorage.getItem('sb_lang') || 'fr';
-let theme = localStorage.getItem('sb_theme') || 'dark';
 let habits = JSON.parse(localStorage.getItem('sb_habits_' + lang)) || DEFAULT_HABITS[lang];
 let waterCl = parseInt(localStorage.getItem('sb_water') || '125');
 let selectedDay = (new Date().getDay() + 6) % 7;
+let selectedFormDays = [true, true, true, true, true, true, true];
+let selectedColor = '#16a34a';
+let selectedGoal = 'Aucun';
 
 document.addEventListener('DOMContentLoaded', () => {
-  applyTheme(theme);
   setLanguage(lang, false);
   renderDays();
   renderHabits();
   renderCalendar();
   renderDate();
 });
-
-function applyTheme(t) {
-  theme = t;
-  document.documentElement.setAttribute('data-theme', theme);
-  localStorage.setItem('sb_theme', theme);
-  document.getElementById('themeBtn').textContent = theme === 'dark' ? '🌙' : '☀️';
-  
-  const metaTheme = document.querySelector('meta[name="theme-color"]');
-  if (metaTheme) {
-    metaTheme.setAttribute('content', theme === 'dark' ? '#15161c' : '#f3f4f8');
-  }
-}
-
-function toggleTheme() {
-  applyTheme(theme === 'dark' ? 'light' : 'dark');
-}
 
 function setLanguage(l) {
   lang = l;
@@ -729,6 +884,12 @@ function setLanguage(l) {
   document.getElementById('lbl-progtitle').textContent = t.progtitle;
   document.getElementById('newHabitInp').placeholder = t.addph;
   document.getElementById('lbl-addbtn').textContent = t.addbtn;
+  document.getElementById('lbl-whichdays').textContent = t.whichDays;
+  document.getElementById('btn-freq-every').textContent = t.freqEvery;
+  document.getElementById('btn-freq-weekdays').textContent = t.freqWeekdays;
+  document.getElementById('btn-freq-weekends').textContent = t.freqWeekends;
+  document.getElementById('lbl-color').textContent = t.colorLabel;
+  document.getElementById('lbl-goal').textContent = t.goalLabel;
   document.getElementById('nav-week').textContent = t.navWeek;
   document.getElementById('nav-stats').textContent = t.navStats;
   document.getElementById('nav-trophies').textContent = t.navTrophies;
@@ -738,10 +899,73 @@ function setLanguage(l) {
   document.getElementById('lbl-resetbtn').textContent = t.resetbtn;
   document.getElementById('siriHelp').innerHTML = t.siri;
 
+  renderFormDays();
+  renderColors();
+  renderGoals();
   renderTrophies();
   renderDays();
   renderHabits();
   renderDate();
+}
+
+function renderFormDays() {
+  const grid = document.getElementById('formDaysGrid');
+  grid.innerHTML = '';
+  const days = FORM_DAYS[lang];
+  days.forEach((dayName, idx) => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = `form-day-btn ${selectedFormDays[idx] ? 'selected' : ''}`;
+    btn.textContent = dayName;
+    btn.onclick = () => {
+      selectedFormDays[idx] = !selectedFormDays[idx];
+      renderFormDays();
+    };
+    grid.appendChild(btn);
+  });
+}
+
+function renderColors() {
+  const container = document.getElementById('colorPicker');
+  container.innerHTML = '';
+  PALETTE.forEach(c => {
+    const dot = document.createElement('div');
+    dot.className = `color-dot ${selectedColor === c ? 'selected' : ''}`;
+    dot.style.backgroundColor = c;
+    dot.onclick = () => {
+      selectedColor = c;
+      renderColors();
+    };
+    container.appendChild(dot);
+  });
+}
+
+function renderGoals() {
+  const container = document.getElementById('goalGrid');
+  container.innerHTML = '';
+  GOAL_OPTIONS.forEach(g => {
+    const label = g === 'Aucun' ? UI_TEXT[lang].noneGoal : g;
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = `goal-btn ${selectedGoal === g ? 'selected' : ''}`;
+    btn.textContent = label;
+    btn.onclick = () => {
+      selectedGoal = g;
+      renderGoals();
+    };
+    container.appendChild(btn);
+  });
+}
+
+function selectPreset(type) {
+  if (type === 'every') {
+    selectedFormDays = [true, true, true, true, true, true, true];
+  } else if (type === 'weekdays') {
+    selectedFormDays = [true, true, true, true, true, false, false];
+  } else if (type === 'weekends') {
+    selectedFormDays = [false, false, false, false, false, true, true];
+  }
+  renderFormDays();
 }
 
 function renderDate() {
@@ -784,11 +1008,15 @@ function renderHabits() {
     if (h.done) completed++;
     const row = document.createElement('div');
     row.className = 'habit-row';
+    row.style.setProperty('--habit-color', h.color || '#16a34a');
     row.onclick = () => toggleHabit(h.id);
+
+    const goalDisplay = (h.goal && h.goal !== 'Aucun' && h.goal !== 'None' && h.goal !== 'Ninguno') ? `<span class="habit-goal-tag">⏱ ${h.goal} min</span>` : '';
+
     row.innerHTML = `
       <div class="cbx ${h.done ? 'done' : ''}">${h.done ? '✓' : ''}</div>
       <div class="habit-mid">
-        <div class="habit-name ${h.done ? 'done' : ''}">${h.name}</div>
+        <div class="habit-name ${h.done ? 'done' : ''}">${h.name} ${goalDisplay}</div>
         <div class="habit-sub">🔥 ${h.streak} ${UI_TEXT[lang].streak}</div>
       </div>
     `;
@@ -819,7 +1047,16 @@ function addNewHabit() {
   const name = inp.value.trim();
   if (!name) return;
 
-  habits.push({ id: Date.now(), name, streak: 0, done: false });
+  habits.push({ 
+    id: Date.now(), 
+    name, 
+    streak: 0, 
+    done: false, 
+    days: [...selectedFormDays],
+    color: selectedColor,
+    goal: selectedGoal
+  });
+
   inp.value = '';
   renderHabits();
 }
